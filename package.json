@@ -4,6 +4,9 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
+    "body-parser": "^1.11.0",
+    "documentdb": "^0.9.3",
+    "doqmentdb": "^0.2.7",
     "express": "^4.11.2"
   },
   "devDependencies": {},
