@@ -7,10 +7,8 @@ var server = require('http').createServer(app);
 var photoDB = require('./photo_data/index')
 var port = process.env.PORT || 8000;
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: true
-})); 
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({extended: true, limit: '50mb' }));
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -30,7 +28,7 @@ app.get('/api/photos', function (req, res) {
   .then(function(photos){
     var retData =[];
     photos.forEach(function(v){
-      retData.push({usr: v.name ,img: v.img})
+      retData.push({usr: v.name ,img: v.img, img: v.title})
     });
     res.json({"photo_data": retData});
   });
@@ -42,7 +40,7 @@ app.get('/api/myphotos/:uname', function (req, res) {
   .then(function(photos){
     var retData =[];
     photos.forEach(function(v){
-      retData.push({usr: v.name ,img: v.img})
+      retData.push({usr: v.name ,img: v.img, img: v.title})
     });
     res.json({"photo_data": retData});
   });
@@ -51,9 +49,11 @@ app.get('/api/myphotos/:uname', function (req, res) {
 // 写真投稿
 app.post('/api/photos', function(req, res){
   var data = req.body;
+  console.log('img size:', data.img.length)
   photoDB.create({
       name: data.usr,
-      img: data.img
+      img: data.img,
+      title: data.title
     }).catch(console.log);
   res.json(200)
 })
