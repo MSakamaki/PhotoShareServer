@@ -28,7 +28,7 @@ app.get('/api/photos', function (req, res) {
   .then(function(photos){
     var retData =[];
     photos.forEach(function(v){
-      retData.push({usr: v.name ,img: v.img, img: v.title})
+      retData.push({usr: v.name ,img: v.img, title: v.title})
     });
     res.json({"photo_data": retData});
   });
@@ -40,7 +40,7 @@ app.get('/api/myphotos/:uname', function (req, res) {
   .then(function(photos){
     var retData =[];
     photos.forEach(function(v){
-      retData.push({usr: v.name ,img: v.img, img: v.title})
+      retData.push({usr: v.name ,img: v.img, title: v.title})
     });
     res.json({"photo_data": retData});
   });
