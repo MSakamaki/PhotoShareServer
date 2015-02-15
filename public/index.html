@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head lang="jp">
+  <meta charset="UTF-8">
+  <title>Firefox OS ハンズオン フォトギャラリー</title>
+</head>
+<body ng-app="FxosOsc">
+  <div id="app">
+    <div ng-include="'photo/photolist.html'"></div>
+  </div>
+<script src="jspm_packages/system.js"></script>
+<script src="config.js"></script>
+<script>
+  System.import('app');
+</script>
+</body>
+</html>

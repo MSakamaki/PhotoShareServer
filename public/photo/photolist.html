@@ -1,0 +1,12 @@
+<div ng-controller="photolist">
+  <h2>フォトギャラリー</h2>
+  <ul>
+    <li ng-repeat="photo in photos | reverse">
+      <div>
+        <label>投稿者：<span ng-bind="photo.username"></span></label>
+        <label>タイトル：<span ng-bind="photo.title"></span></label>
+      </div>
+      <img data-ng-src="{{photo.img}}"/>
+    </li>
+  </ul>
+</div>

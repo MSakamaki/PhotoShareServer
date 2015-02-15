@@ -10,6 +10,9 @@ var port = process.env.PORT || 8000;
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({extended: true, limit: '50mb' }));
 
+app.use(express.static(__dirname + '/public'));
+
+
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -21,6 +24,7 @@ server.listen(port,process.env.OPENSHIFT_NODEJS_IP || process.env.IP || undefine
   , function () {
   console.log('Express server listening on %d, in %s mode', port, app.get('env'));
 });
+
 
 // すべてのデータを取得
 app.get('/api/photos', function (req, res) {
@@ -57,6 +61,9 @@ app.post('/api/photos', function(req, res){
     }).catch(console.log);
   res.json(200)
 })
+
+
+
 
 
 /*******/
