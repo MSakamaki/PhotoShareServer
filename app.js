@@ -4,8 +4,14 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser')
 var server = require('http').createServer(app);
-var photoDB = require('./photo_data/index')
+var photoDB = require('./photo_data/index');
 var port = process.env.PORT || 8000;
+// wd
+var WebSocketServer = require('ws').Server;
+var wss = new WebSocketServer({server: server});
+var ws;
+
+
 
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({extended: true, limit: '50mb' }));
@@ -55,14 +61,32 @@ app.post('/api/photos', function(req, res){
   var data = req.body;
   console.log('img size:', data.img.length)
   photoDB.create({
-      name: data.usr,
-      img: data.img,
-      title: data.title
-    }).catch(console.log);
+       name: data.usr,
+       img: data.img,
+       title: data.title
+     }).catch(console.log);
+  ws.send(JSON.stringify({
+    usr: data.usr,
+    img: data.img,
+    title: data.title
+  }));
   res.json(200)
 })
 
+/* WebSocket */
+wss.on('connection', function(_ws) {
+  ws = _ws;
+  // ws.on('message', function (data, flags) {
+  //   var data = JSON.parse(data);
+  //   ws.send('done.');
+  // });
 
+  //console.log('websocket connection open');
+
+  _ws.on('close', function() {
+    console.log('websocket connection close');
+  });
+});
 
 
 
