@@ -30,12 +30,26 @@ app.controller('photolist', ($http, $scope, ws)=>{
     });
   ws.setMessageEvent((msg)=>{
     let data = JSON.parse( msg.data );
-    console.log('cd', data)
-    $scope.photos.push({
+
+    // $scope.photos = $scope.photos.map(function(ph){
+    //   if (ph.username === data.usr && ph.title === data.title){
+    //     ph.img = data.img;
+    //   }
+    // })
+    var isUpdate = false;
+    $scope.photos.forEach(function(photo){
+      if (photo.username === data.usr && photo.title === data.title){
+        isUpdate=true;
+        photo.img = data.img;
+      }
+    });
+    if (!isUpdate){
+      $scope.photos.push({
           img:data.img,
           username: data.usr,
           title: data.title
         });
+    }
     $scope.$apply();
   });
 });
