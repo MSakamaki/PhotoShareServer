@@ -64,37 +64,36 @@ app.get('/api/myphotos/:uname', function (req, res) {
 // 写真投稿
 app.post('/api/photos', function(req, res){
   var data = req.body;
-  //console.log('img size:', data.img.length)
-/*var photo = {
-       name: data.usr,
-       img: data.img,
-       title: data.title
-     }; */
-  photoDB.findOne({name: data.usr, title: data.title})
-   .then(function(ph){
-    //console.log('ph:', ph)
-    if (ph){
-      photoDB.update(
-          {name: ph.name, title: ph.title},
-          {img: data.img}
-        ).catch(console.log);
-    }else{
-      photoDB.create({
-           name: data.usr,
-           img: data.img,
-           title: data.title
-         }).catch(console.log);
-      }
-   })
-  
-  if(ws && ws.readyState == WS_STATE.OPEN){
-    ws.send(JSON.stringify({
-      usr: data.usr,
-      img: data.img,
-      title: data.title
-    }));
+  if (data && data.usr && data.title && data.img){
+    console.log('data sucess')
+    photoDB.findOne({name: data.usr, title: data.title})
+     .then(function(ph){
+      //console.log('ph:', ph)
+      if (ph){
+        photoDB.update(
+            {name: ph.name, title: ph.title},
+            {img: data.img}
+          ).catch(console.log);
+      }else{
+        photoDB.create({
+             name: data.usr,
+             img: data.img,
+             title: data.title
+           }).catch(console.log);
+        }
+     })
+    
+    if(ws && ws.readyState == WS_STATE.OPEN){
+      ws.send(JSON.stringify({
+        usr: data.usr,
+        img: data.img,
+        title: data.title
+      }));
+    }
+    res.status(200).send('sucess');
+  }else{
+    res.status(500).send('data object error');
   }
-  res.json(200)
 })
 
 /* WebSocket */
