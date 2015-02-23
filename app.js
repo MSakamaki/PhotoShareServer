@@ -5,11 +5,13 @@ var app = express();
 var bodyParser = require('body-parser')
 var server = require('http').createServer(app);
 var photoDB = require('./photo_data/index');
-var port = process.env.PORT || 8000;
+var port = process.env.PORT || 8001;
 // wd
-var WebSocketServer = require('ws').Server;
-var wss = new WebSocketServer({server: server});
-var ws;
+//var WebSocketServer = require('ws').Server;
+var io = require('socket.io')(server);
+var socket;
+//var wss = new WebSocketServer({server: server});
+//var ws;
 
 var WS_STATE ={
   CONNECTING : 0, // 接続はまだ確立されていない。
@@ -82,14 +84,12 @@ app.post('/api/photos', function(req, res){
            }).catch(console.log);
         }
      })
-    
-    if(ws && ws.readyState == WS_STATE.OPEN){
-      ws.send(JSON.stringify({
+    console.log('socket',socket.emmit)
+    socket.emit('ppmsg',{
         usr: data.usr,
         img: data.img,
         title: data.title
-      }));
-    }
+      });
     res.status(200).send('sucess');
   }else{
     res.status(500).send('data object error');
@@ -97,17 +97,16 @@ app.post('/api/photos', function(req, res){
 })
 
 /* WebSocket */
-wss.on('connection', function(_ws) {
-  ws = _ws;
-  // ws.on('message', function (data, flags) {
-  //   var data = JSON.parse(data);
-  //   ws.send('done.');
-  // });
+io.on('connection', function(_socket){
+  socket = _socket;
 
-  //console.log('websocket connection open');
-
-  _ws.on('close', function() {
-    console.log('websocket connection close');
+  console.log('a user connected');
+  _socket.on('disconnect', function(){
+    //clearInterval(id);
+    console.log('user disconnected');
+  });
+  _socket.on('chat message', function(msg){
+    console.log('message: ' + msg);
   });
 });
 
