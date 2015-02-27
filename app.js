@@ -9,7 +9,7 @@ var port = process.env.PORT || 8001;
 // wd
 //var WebSocketServer = require('ws').Server;
 var io = require('socket.io')(server);
-var socket;
+var socket = [];
 //var wss = new WebSocketServer({server: server});
 //var ws;
 
@@ -85,11 +85,17 @@ app.post('/api/photos', function(req, res){
         }
      })
     console.log('socket',socket.emmit)
-    socket.emit('ppmsg',{
-        usr: data.usr,
-        img: data.img,
-        title: data.title
-      });
+    socket.forEach(function(ws){
+      try{
+      ws.emit('ppmsg',{
+          usr: data.usr,
+          img: data.img,
+          title: data.title
+        });
+      }catch(e){
+        console.log('err', e);
+      }
+    })
     res.status(200).send('sucess');
   }else{
     res.status(500).send('data object error');
@@ -98,7 +104,7 @@ app.post('/api/photos', function(req, res){
 
 /* WebSocket */
 io.on('connection', function(_socket){
-  socket = _socket;
+  socket.push(_socket)
 
   console.log('a user connected');
   _socket.on('disconnect', function(){
